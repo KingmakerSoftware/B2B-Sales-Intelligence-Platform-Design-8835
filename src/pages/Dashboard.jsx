@@ -1,17 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import * as FiIcons from 'react-icons/fi';
-import SafeIcon from '../common/SafeIcon';
-import { useApp } from '../context/AppContext';
-import StatsCard from '../components/dashboard/StatsCard';
-import RecentActivity from '../components/dashboard/RecentActivity';
-import QuickActions from '../components/dashboard/QuickActions';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import * as FiIcons from 'react-icons/fi'
+import SafeIcon from '../components/common/SafeIcon'
+import { useApp } from '../context/AppContext'
+import { useAuth } from '../context/AuthContext'
+import StatsCard from '../components/dashboard/StatsCard'
+import RecentActivity from '../components/dashboard/RecentActivity'
+import QuickActions from '../components/dashboard/QuickActions'
 
-const { FiUsers, FiTarget, FiTrendingUp, FiDollarSign } = FiIcons;
+const { FiUsers, FiTarget, FiTrendingUp, FiDollarSign } = FiIcons
 
 function Dashboard() {
-  const { state } = useApp();
+  const { state } = useApp()
+  const { userProfile } = useAuth()
 
   const stats = [
     {
@@ -42,7 +44,7 @@ function Dashboard() {
       change: '+18%',
       positive: true
     }
-  ];
+  ]
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -53,7 +55,7 @@ function Dashboard() {
       >
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {state.user.name}
+            Welcome back, {userProfile?.full_name || 'User'}
           </h1>
           <p className="text-gray-600">
             Here's what's happening with your sales intelligence today.
@@ -93,7 +95,7 @@ function Dashboard() {
         </div>
       </motion.div>
     </div>
-  );
+  )
 }
 
-export default Dashboard;
+export default Dashboard
