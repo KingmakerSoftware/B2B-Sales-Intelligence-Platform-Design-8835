@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import * as FiIcons from 'react-icons/fi';
-import SafeIcon from '../common/SafeIcon';
-import { useApp } from '../../context/AppContext';
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import * as FiIcons from 'react-icons/fi'
+import SafeIcon from '../common/SafeIcon'
+import { useApp } from '../../context/AppContext'
 
-const { FiX, FiPlus, FiTrash2 } = FiIcons;
+const { FiX, FiPlus, FiTrash2 } = FiIcons
 
-function ProductForm({ product, onClose }) {
-  const { dispatch } = useApp();
+function ProductForm({ product, onClose, categories }) {
+  const { dispatch } = useApp()
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -15,38 +15,33 @@ function ProductForm({ product, onClose }) {
     targetIndustries: [],
     keyFeatures: [''],
     pricing: ''
-  });
+  })
 
   useEffect(() => {
     if (product) {
-      setFormData(product);
+      setFormData(product)
     }
-  }, [product]);
+  }, [product])
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    
+    e.preventDefault()
     const productData = {
       ...formData,
       id: product?.id || Date.now(),
       keyFeatures: formData.keyFeatures.filter(f => f.trim() !== '')
-    };
+    }
 
     if (product) {
-      dispatch({ type: 'UPDATE_PRODUCT', payload: productData });
+      dispatch({ type: 'UPDATE_PRODUCT', payload: productData })
     } else {
-      dispatch({ type: 'ADD_PRODUCT', payload: productData });
+      dispatch({ type: 'ADD_PRODUCT', payload: productData })
     }
-    
-    onClose();
-  };
+    onClose()
+  }
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleIndustryChange = (industry) => {
     setFormData(prev => ({
@@ -54,33 +49,28 @@ function ProductForm({ product, onClose }) {
       targetIndustries: prev.targetIndustries.includes(industry)
         ? prev.targetIndustries.filter(i => i !== industry)
         : [...prev.targetIndustries, industry]
-    }));
-  };
+    }))
+  }
 
   const handleFeatureChange = (index, value) => {
-    const newFeatures = [...formData.keyFeatures];
-    newFeatures[index] = value;
-    setFormData({ ...formData, keyFeatures: newFeatures });
-  };
+    const newFeatures = [...formData.keyFeatures]
+    newFeatures[index] = value
+    setFormData({ ...formData, keyFeatures: newFeatures })
+  }
 
   const addFeature = () => {
-    setFormData({
-      ...formData,
-      keyFeatures: [...formData.keyFeatures, '']
-    });
-  };
+    setFormData({ ...formData, keyFeatures: [...formData.keyFeatures, ''] })
+  }
 
   const removeFeature = (index) => {
-    setFormData({
-      ...formData,
-      keyFeatures: formData.keyFeatures.filter((_, i) => i !== index)
-    });
-  };
+    setFormData({ ...formData, keyFeatures: formData.keyFeatures.filter((_, i) => i !== index) })
+  }
 
   const industries = [
-    'Technology', 'Healthcare', 'Finance', 'Manufacturing', 
-    'Retail', 'Education', 'Real Estate', 'Renewable Energy'
-  ];
+    'Technology', 'Healthcare', 'Finance', 'Manufacturing', 'Retail', 
+    'Education', 'Real Estate', 'Renewable Energy', 'Consulting',
+    'Media & Entertainment', 'Transportation', 'Government'
+  ]
 
   return (
     <motion.div
@@ -95,7 +85,7 @@ function ProductForm({ product, onClose }) {
       >
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            {product ? 'Edit Product' : 'Add New Product'}
+            {product ? 'Edit Product/Service' : 'Add New Product/Service'}
           </h2>
           <button
             onClick={onClose}
@@ -109,7 +99,7 @@ function ProductForm({ product, onClose }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Product Name
+                Product/Service Name *
               </label>
               <input
                 type="text"
@@ -118,27 +108,39 @@ function ProductForm({ product, onClose }) {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                placeholder="e.g., CloudSync Pro, Marketing Consulting"
               />
             </div>
-
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
+                Category *
               </label>
-              <input
-                type="text"
+              <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
+              >
+                <option value="">Select a category</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              {categories.length === 0 && (
+                <p className="mt-1 text-xs text-orange-600">
+                  No categories available. Please add categories first.
+                </p>
+              )}
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+              Description *
             </label>
             <textarea
               name="description"
@@ -147,6 +149,7 @@ function ProductForm({ product, onClose }) {
               required
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              placeholder="Describe what this product or service does and its main benefits"
             />
           </div>
 
@@ -154,7 +157,7 @@ function ProductForm({ product, onClose }) {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Target Industries
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {industries.map(industry => (
                 <label key={industry} className="flex items-center">
                   <input
@@ -171,7 +174,7 @@ function ProductForm({ product, onClose }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Key Features
+              Key Features/Benefits
             </label>
             <div className="space-y-2">
               {formData.keyFeatures.map((feature, index) => (
@@ -180,13 +183,14 @@ function ProductForm({ product, onClose }) {
                     type="text"
                     value={feature}
                     onChange={(e) => handleFeatureChange(index, e.target.value)}
-                    placeholder="Enter a key feature"
+                    placeholder="Enter a key feature or benefit"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                   <button
                     type="button"
                     onClick={() => removeFeature(index)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    disabled={formData.keyFeatures.length === 1}
                   >
                     <SafeIcon icon={FiTrash2} className="h-4 w-4" />
                   </button>
@@ -195,7 +199,7 @@ function ProductForm({ product, onClose }) {
               <button
                 type="button"
                 onClick={addFeature}
-                className="flex items-center space-x-2 text-primary-600 hover:text-primary-700"
+                className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 text-sm"
               >
                 <SafeIcon icon={FiPlus} className="h-4 w-4" />
                 <span>Add Feature</span>
@@ -205,14 +209,14 @@ function ProductForm({ product, onClose }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Pricing
+              Pricing *
             </label>
             <input
               type="text"
               name="pricing"
               value={formData.pricing}
               onChange={handleChange}
-              placeholder="e.g., $99/month or Contact for pricing"
+              placeholder="e.g., $99/month, $5,000 one-time, Contact for pricing"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
@@ -230,13 +234,13 @@ function ProductForm({ product, onClose }) {
               type="submit"
               className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
             >
-              {product ? 'Update Product' : 'Add Product'}
+              {product ? 'Update Product/Service' : 'Add Product/Service'}
             </button>
           </div>
         </form>
       </motion.div>
     </motion.div>
-  );
+  )
 }
 
-export default ProductForm;
+export default ProductForm
