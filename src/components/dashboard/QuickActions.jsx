@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 
-const { FiSearch, FiPlus, FiBarChart3, FiFileText } = FiIcons;
+const { FiSearch, FiPlus, FiBarChart3, FiFileText, FiGlobe } = FiIcons;
 
 function QuickActions() {
   const actions = [
@@ -16,18 +16,18 @@ function QuickActions() {
       color: 'bg-blue-500'
     },
     {
+      title: 'Analyze Company',
+      description: 'Get contact data and insights for any company domain',
+      icon: FiGlobe,
+      link: '/company-analyzer',
+      color: 'bg-purple-500'
+    },
+    {
       title: 'Add Product',
       description: 'Add new products or services to your portfolio',
       icon: FiPlus,
       link: '/products',
       color: 'bg-green-500'
-    },
-    {
-      title: 'View Analytics',
-      description: 'Analyze your sales performance and trends',
-      icon: FiBarChart3,
-      link: '/',
-      color: 'bg-purple-500'
     },
     {
       title: 'Generate Report',

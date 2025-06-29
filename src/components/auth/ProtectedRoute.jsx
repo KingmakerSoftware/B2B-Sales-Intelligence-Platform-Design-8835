@@ -7,6 +7,8 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
   const location = useLocation()
 
+  console.log('ProtectedRoute - loading:', loading, 'user:', !!user)
+
   if (loading) {
     return <LoadingSpinner />
   }

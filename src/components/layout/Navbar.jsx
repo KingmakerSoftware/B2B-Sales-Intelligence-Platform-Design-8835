@@ -5,7 +5,7 @@ import * as FiIcons from 'react-icons/fi'
 import SafeIcon from '../common/SafeIcon'
 import { useAuth } from '../../context/AuthContext'
 
-const { FiTarget, FiSearch, FiBarChart3, FiPackage, FiUser, FiLogOut, FiSettings } = FiIcons
+const { FiTarget, FiSearch, FiBarChart3, FiPackage, FiUser, FiLogOut, FiGlobe } = FiIcons
 
 function Navbar() {
   const location = useLocation()
@@ -16,6 +16,7 @@ function Navbar() {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: FiBarChart3 },
     { path: '/prospect-search', label: 'Prospect Search', icon: FiSearch },
+    { path: '/company-analyzer', label: 'Company Analyzer', icon: FiGlobe },
     { path: '/products', label: 'Products & Stories', icon: FiPackage },
   ]
 
@@ -47,14 +48,16 @@ function Navbar() {
                     <SafeIcon
                       icon={item.icon}
                       className={`h-5 w-5 ${
-                        location.pathname === item.path
+                        location.pathname === item.path || 
+                        (item.path === '/company-analyzer' && location.pathname.startsWith('/company-analyzer'))
                           ? 'text-primary-600'
                           : 'text-gray-600 group-hover:text-primary-600'
                       }`}
                     />
                     <span
                       className={`font-medium ${
-                        location.pathname === item.path
+                        location.pathname === item.path || 
+                        (item.path === '/company-analyzer' && location.pathname.startsWith('/company-analyzer'))
                           ? 'text-primary-600'
                           : 'text-gray-600 group-hover:text-primary-600'
                       }`}
@@ -62,7 +65,8 @@ function Navbar() {
                       {item.label}
                     </span>
                   </div>
-                  {location.pathname === item.path && (
+                  {(location.pathname === item.path || 
+                    (item.path === '/company-analyzer' && location.pathname.startsWith('/company-analyzer'))) && (
                     <motion.div
                       layoutId="activeTab"
                       className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 rounded-full"

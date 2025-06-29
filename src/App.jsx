@@ -10,6 +10,9 @@ import CompanyAnalysis from './pages/CompanyAnalysis'
 import ProductManager from './pages/ProductManager'
 import OnePager from './pages/OnePager'
 import Profile from './pages/Profile'
+import CompanyAnalyzerHome from './pages/CompanyAnalyzerHome'
+import CompanyAnalyzer from './pages/CompanyAnalyzer'
+import ContactDetails from './pages/ContactDetails'
 import LoginForm from './components/auth/LoginForm'
 import SignupForm from './components/auth/SignupForm'
 import ForgotPasswordForm from './components/auth/ForgotPasswordForm'
@@ -19,11 +22,25 @@ import LoadingSpinner from './components/common/LoadingSpinner'
 function AppContent() {
   const { user, loading } = useAuth()
 
+  console.log('AppContent render - loading:', loading, 'user:', !!user)
+
+  // Force loading to false after 3 seconds as a fallback
+  React.useEffect(() => {
+    if (loading) {
+      const timeout = setTimeout(() => {
+        console.log('AppContent: Force stopping loading after 3 seconds')
+      }, 3000)
+      return () => clearTimeout(timeout)
+    }
+  }, [loading])
+
   if (loading) {
+    console.log('AppContent: Showing loading spinner')
     return <LoadingSpinner />
   }
 
   if (!user) {
+    console.log('AppContent: No user, showing auth routes')
     return (
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
@@ -33,6 +50,7 @@ function AppContent() {
     )
   }
 
+  console.log('AppContent: User authenticated, showing main app')
   return (
     <AppProvider>
       <div className="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50">
@@ -59,6 +77,21 @@ function AppContent() {
                 <CompanyAnalysis />
               </ProtectedRoute>
             } />
+            <Route path="/company-analyzer" element={
+              <ProtectedRoute>
+                <CompanyAnalyzerHome />
+              </ProtectedRoute>
+            } />
+            <Route path="/company-analyzer/:companyId" element={
+              <ProtectedRoute>
+                <CompanyAnalyzer />
+              </ProtectedRoute>
+            } />
+            <Route path="/contact/:contactId" element={
+              <ProtectedRoute>
+                <ContactDetails />
+              </ProtectedRoute>
+            } />
             <Route path="/products" element={
               <ProtectedRoute>
                 <ProductManager />
@@ -82,6 +115,7 @@ function AppContent() {
 }
 
 function App() {
+  console.log('App component rendering')
   return (
     <AuthProvider>
       <Router>
